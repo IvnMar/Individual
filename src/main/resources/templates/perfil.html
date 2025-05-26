@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil</title>
+    
+    <!-- CSS de temas (debe ir primero) -->
+    <link rel="stylesheet" href="/css/themes.css">
+    <!-- CSS específico de perfil -->
     <link rel="stylesheet" href="/css/perfil.css">
 </head>
 <body>
@@ -100,6 +104,9 @@
         <div th:if="${mensaje}" class="mensaje" th:classappend="${tipoMensaje == 'error'} ? 'mensaje-error' : 'mensaje-exito'" th:text="${mensaje}">
         </div>
     </div>
+    
+    <!-- JavaScript para el cambio de tema -->
+    <script src="/js/theme-switcher.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {

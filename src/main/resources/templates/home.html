@@ -5,10 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Recomendaciones</title>
+    
+    <!-- CSS de temas (debe ir primero) -->
+    <link rel="stylesheet" href="/css/themes.css">
+    
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             margin: 0;
             padding: 0;
             display: flex;
@@ -18,18 +23,19 @@
         }
         
         .header {
-            background-color: #1a237e;
-            color: white;
+            background-color: var(--bg-header);
+            color: var(--text-white);
             width: 100%;
             padding: 1rem 0;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-light);
         }
         
         .container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
             padding: 2rem;
             margin-top: 3rem;
             width: 80%;
@@ -39,11 +45,11 @@
         
         h1 {
             margin-bottom: 0.5rem;
-            color: #333;
+            color: var(--text-primary);
         }
         
         .welcome-message {
-            color: #666;
+            color: var(--text-secondary);
             margin-bottom: 2rem;
         }
         
@@ -55,34 +61,35 @@
         }
         
         .menu-button {
-            background-color: #3f51b5;
-            color: white;
+            background-color: var(--bg-button);
+            color: var(--text-white);
             border: none;
             border-radius: 4px;
             padding: 1rem 2rem;
             font-size: 1rem;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
         }
         
         .menu-button:hover {
-            background-color: #303f9f;
+            background-color: var(--bg-button-hover);
         }
         
         .admin-button {
-            background-color: #f44336;
+            background-color: var(--bg-admin-button);
         }
         
         .admin-button:hover {
-            background-color: #d32f2f;
+            background-color: var(--bg-admin-button-hover);
         }
         
         .logout {
             margin-top: 2rem;
-            color: #3f51b5;
+            color: var(--text-link);
             text-decoration: none;
+            transition: color 0.3s ease;
         }
         
         .logout:hover {
@@ -110,5 +117,8 @@
         
         <a href="/logout" class="logout">Cerrar Sesión</a>
     </div>
+    
+    <!-- JavaScript para el cambio de tema -->
+    <script src="/js/theme-switcher.js"></script>
 </body>
 </html>

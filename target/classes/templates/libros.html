@@ -4,282 +4,184 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Búsqueda de Libros</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --accent-color: #4cc9f0;
-            --danger-color: #f72585;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
-            --success-color: #4ad66d;
-            --border-radius: 12px;
-            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            color: var(--dark-color);
-            line-height: 1.6;
         }
         
         .header {
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            background-color: #1a237e;
             color: white;
             width: 100%;
-            padding: 1.5rem 0;
+            padding: 1rem 0;
             text-align: center;
-            box-shadow: var(--box-shadow);
-            position: relative;
-            z-index: 10;
-        }
-        
-        .header h1 {
-            font-weight: 600;
-            font-size: 2rem;
-            letter-spacing: 0.5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
         
         .container {
             max-width: 1200px;
-            margin: 2rem auto;
+            margin: 0 auto;
             padding: 20px;
-            position: relative;
-            z-index: 5;
         }
         
         .search-section {
             background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 2rem;
-            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
         }
         
         .search-title {
             font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--dark-color);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .search-title i {
-            color: var(--primary-color);
+            margin-bottom: 15px;
+            color: #333;
         }
         
         .search-form {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         .form-group {
-            margin-bottom: 0.5rem;
+            flex: 1;
+            min-width: 200px;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 0.8rem;
+            margin-bottom: 8px;
             font-weight: 500;
             color: #555;
-            font-size: 0.95rem;
         }
         
-        .form-group input, 
-        .form-group select {
+        .form-group input, .form-group select {
             width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1px solid #e0e0e0;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-family: 'Poppins', sans-serif;
-            transition: var(--transition);
-        }
-        
-        .form-group input:focus, 
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
         }
         
         .search-button {
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            background-color: #3f51b5;
             color: white;
             border: none;
-            border-radius: var(--border-radius);
-            padding: 0.8rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 500;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 16px;
             cursor: pointer;
-            transition: var(--transition);
-            margin-top: auto;
-            height: fit-content;
-            align-self: flex-end;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            transition: background-color 0.3s;
+            margin-top: 24px;
+            height: 42px;
         }
         
         .search-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .search-button:active {
-            transform: translateY(0);
+            background-color: #303f9f;
         }
         
         .results-section {
-            margin-top: 2rem;
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 2rem;
+            margin-top: 30px;
         }
         
         .results-title {
             font-size: 1.3rem;
-            margin-bottom: 1.5rem;
-            color: var(--dark-color);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .results-title i {
-            color: var(--primary-color);
+            margin-bottom: 15px;
+            color: #333;
         }
         
         .book-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
         }
         
         .book-card {
             background-color: white;
-            border-radius: var(--border-radius);
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: var(--transition);
-            border: 1px solid #f0f0f0;
-            display: flex;
-            flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
         
         .book-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
         .book-cover {
-            height: 320px;
-            background-color: #f5f5f5;
+            height: 300px;
+            background-color: #e0e0e0;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            position: relative;
         }
         
         .book-cover img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: var(--transition);
-        }
-        
-        .book-card:hover .book-cover img {
-            transform: scale(1.03);
         }
         
         .book-info {
-            padding: 1.2rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
+            padding: 15px;
         }
         
         .book-title {
             font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--dark-color);
+            margin-bottom: 8px;
+            color: #333;
         }
         
         .book-author {
             font-size: 0.9rem;
             color: #666;
-            margin-bottom: 0.5rem;
+            margin-bottom: 8px;
         }
         
         .book-year {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #888;
-            margin-bottom: 0.8rem;
-            font-weight: 500;
+            margin-bottom: 12px;
         }
         
         .book-description {
             font-size: 0.9rem;
             color: #555;
             line-height: 1.5;
-            margin-bottom: 1rem;
-            flex-grow: 1;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;  /* Para navegadores WebKit */
-            line-clamp: 3;          /* Propiedad estándar (soporte limitado) */
-            -webkit-box-orient: vertical;
+            max-height: 4.5em;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
         }
         
         .book-actions {
             display: flex;
             justify-content: space-between;
-            gap: 0.8rem;
-            margin-top: auto;
+            margin-top: 15px;
         }
         
         .book-button {
-            padding: 0.6rem 1rem;
+            padding: 8px 12px;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             font-size: 0.9rem;
-            font-weight: 500;
             cursor: pointer;
-            transition: var(--transition);
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+            transition: background-color 0.3s;
         }
         
         .details-button {
-            background-color: var(--light-color);
-            color: var(--dark-color);
+            background-color: #f5f5f5;
+            color: #333;
         }
         
         .details-button:hover {
@@ -287,150 +189,100 @@
         }
         
         .recommend-button {
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            background-color: #3f51b5;
             color: white;
         }
         
         .recommend-button:hover {
-            opacity: 0.9;
+            background-color: #303f9f;
         }
         
         .pagination {
             display: flex;
             justify-content: center;
-            margin-top: 2rem;
-            gap: 0.5rem;
+            margin-top: 30px;
+            gap: 5px;
         }
         
         .pagination-button {
-            padding: 0.6rem 1rem;
-            border: 1px solid #e0e0e0;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
             background-color: white;
-            color: var(--dark-color);
-            border-radius: 6px;
+            color: #333;
+            border-radius: 4px;
             cursor: pointer;
-            transition: var(--transition);
-            font-weight: 500;
-            min-width: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            transition: background-color 0.3s;
         }
         
         .pagination-button:hover {
             background-color: #f5f5f5;
-            border-color: var(--primary-color);
-            color: var(--primary-color);
         }
         
         .pagination-button.active {
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            background-color: #3f51b5;
             color: white;
-            border-color: var(--primary-color);
+            border-color: #3f51b5;
         }
         
         .no-results {
             text-align: center;
-            padding: 3rem;
+            padding: 30px;
             color: #666;
             display: none;
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-        }
-        
-        .no-results i {
-            font-size: 2.5rem;
-            color: #ddd;
-            margin-bottom: 1rem;
         }
         
         .navigation-buttons {
             display: flex;
-            justify-content: flex-start;
-            margin-top: 1.5rem;
+            justify-content: space-between;
+            margin-top: 20px;
         }
         
         .back-button {
-            background-color: var(--light-color);
-            color: var(--dark-color);
+            background-color: #f5f5f5;
+            color: #333;
             border: none;
-            border-radius: var(--border-radius);
-            padding: 0.8rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 500;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 16px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: background-color 0.3s;
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            display: inline-block;
         }
         
         .back-button:hover {
             background-color: #e0e0e0;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         
         .loading {
             text-align: center;
-            padding: 3rem;
+            padding: 20px;
             display: none;
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            margin: 2rem 0;
         }
         
         .loading-spinner {
-            width: 50px;
-            height: 50px;
-            margin: 0 auto 1.5rem;
-            border: 4px solid rgba(67, 97, 238, 0.1);
-            border-left-color: var(--primary-color);
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3f51b5;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-        }
-        
-        .loading p {
-            font-weight: 500;
-            color: var(--dark-color);
         }
         
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            .search-form {
-                grid-template-columns: 1fr;
-            }
-            
-            .book-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .search-section,
-            .results-section {
-                padding: 1.5rem;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1><i class="fas fa-book-open"></i> Búsqueda de Libros</h1>
+        <h1>Búsqueda de Libros</h1>
     </div>
     
     <div class="container">
         <div class="search-section">
-            <h2 class="search-title"><i class="fas fa-search"></i> Buscar Libros</h2>
+            <h2 class="search-title">Buscar Libros</h2>
             <div class="search-form">
                 <div class="form-group">
                     <label for="title">Título</label>
@@ -456,9 +308,7 @@
                         <option value="self_help">Autoayuda</option>
                     </select>
                 </div>
-                <button id="searchButton" class="search-button">
-                    <i class="fas fa-search"></i> Buscar
-                </button>
+                <button id="searchButton" class="search-button">Buscar</button>
             </div>
         </div>
         
@@ -468,7 +318,7 @@
         </div>
         
         <div id="resultsSection" class="results-section" style="display: none;">
-            <h2 class="results-title"><i class="fas fa-list-ul"></i> Resultados de la búsqueda</h2>
+            <h2 class="results-title">Resultados de la búsqueda</h2>
             <div id="bookGrid" class="book-grid">
                 <!-- Los resultados de búsqueda se mostrarán aquí -->
             </div>
@@ -479,15 +329,12 @@
         </div>
         
         <div id="noResults" class="no-results">
-            <i class="fas fa-book-dead"></i>
             <h3>No se encontraron resultados para tu búsqueda.</h3>
             <p>Intenta con otros términos o criterios de búsqueda.</p>
         </div>
         
         <div class="navigation-buttons">
-            <a href="/home" class="back-button">
-                <i class="fas fa-arrow-left"></i> Volver al inicio
-            </a>
+            <a href="/home" class="back-button">Volver al inicio</a>
         </div>
     </div>
     
@@ -633,12 +480,8 @@
                             <p class="book-year">${publishYear}</p>
                             <p class="book-description">${description}</p>
                             <div class="book-actions">
-                                <button class="book-button details-button" data-key="${book.key}">
-                                    <i class="fas fa-info-circle"></i> Detalles
-                                </button>
-                                <button class="book-button recommend-button" data-key="${book.key}">
-                                    <i class="fas fa-share"></i> Recomendar
-                                </button>
+                                <button class="book-button details-button" data-key="${book.key}">Ver detalles</button>
+                                <button class="book-button recommend-button" data-key="${book.key}">Recomendar</button>
                             </div>
                         </div>
                     `;
@@ -683,12 +526,7 @@
                 
                 // Botón para primera página
                 if (startPage > 1) {
-                    addPaginationButton(1, '« Primera');
-                }
-                
-                // Botón anterior
-                if (currentPage > 1) {
-                    addPaginationButton(currentPage - 1, '<');
+                    addPaginationButton(1, '«');
                 }
                 
                 // Botones de páginas
@@ -696,14 +534,9 @@
                     addPaginationButton(i, i.toString(), i === currentPage);
                 }
                 
-                // Botón siguiente
-                if (currentPage < totalPages) {
-                    addPaginationButton(currentPage + 1, '>');
-                }
-                
                 // Botón para última página
                 if (endPage < totalPages) {
-                    addPaginationButton(totalPages, 'Última »');
+                    addPaginationButton(totalPages, '»');
                 }
             }
             

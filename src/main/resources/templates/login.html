@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
+    
+    <!-- CSS de temas (debe ir primero) -->
+    <link rel="stylesheet" href="/css/themes.css">
+    
     <style>
         * {
             margin: 0;
@@ -13,38 +17,70 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f4f4f9;
+            background-color: var(--bg-primary);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-image: url('https://images.unsplash.com/photo-1552302896-5c1349f3337d?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* Aquí puedes poner una URL de fondo */
+            background-image: url('https://images.unsplash.com/photo-1552302896-5c1349f3337d?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
             background-size: cover;
             background-position: center;
+            position: relative;
+        }
+
+        /* Overlay para mejor contraste en ambos temas */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        [data-theme="dark"] body::before {
+            background: rgba(0, 0, 0, 0.7);
         }
 
         .form-container {
-            background-color: rgba(0, 0, 0, 0.7); /* Fondo translúcido */
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
             padding: 40px;
             border-radius: 10px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow-dark);
             display: flex;
             flex-direction: column;
             gap: 15px;
             width: 350px;
             max-width: 100%;
-            color: white;
+            color: var(--text-primary);
             text-align: center;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Tema oscuro - hacer el fondo del formulario más transparente */
+        [data-theme="dark"] .form-container {
+            background-color: rgba(30, 30, 30, 0.9);
+            border-color: var(--border-color);
+        }
+
+        /* Tema claro - fondo más sólido */
+        [data-theme="light"] .form-container {
+            background-color: rgba(255, 255, 255, 0.95);
         }
 
         h1 {
             margin-bottom: 20px;
-            color: #fff;
+            color: var(--text-primary);
         }
 
         label {
             font-size: 14px;
-            color: #fff;
+            color: var(--text-primary);
             margin-bottom: 5px;
             text-align: left;
             display: block;
@@ -54,26 +90,28 @@
         input[type="email"],
         input[type="password"] {
             padding: 10px;
-            border: none;
+            border: 1px solid var(--input-border);
             border-radius: 4px;
             font-size: 16px;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
+            background-color: var(--input-bg);
+            color: var(--input-text);
             margin-bottom: 10px;
+            transition: all 0.3s ease;
         }
 
         input[type="text"]:focus,
         input[type="email"]:focus,
         input[type="password"]:focus {
             outline: none;
-            border: 2px solid #4CAF50; /* Resaltar con color verde */
+            border: 2px solid var(--bg-green);
+            background-color: var(--bg-secondary);
         }
 
         button {
             padding: 12px;
-            background-color: #4CAF50;
-            color: white;
+            background-color: var(--bg-green);
+            color: var(--text-white);
             border: none;
             border-radius: 4px;
             font-size: 16px;
@@ -82,14 +120,15 @@
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: var(--bg-green-hover);
         }
 
         a {
-            color: #4CAF50;
+            color: var(--bg-green);
             text-decoration: none;
             display: block;
             margin-top: 15px;
+            transition: color 0.3s ease;
         }
 
         a:hover {
@@ -109,5 +148,8 @@
         </form>
         <a href="/register">¿No tienes cuenta? Regístrate</a>
     </div>
+    
+    <!-- JavaScript para el cambio de tema -->
+    <script src="/js/theme-switcher.js"></script>
 </body>
 </html>
