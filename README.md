@@ -1,4 +1,4 @@
-# Tarea2
+# indivudual
 
 ## Cómo instalar y ejecutar la aplicación
 
