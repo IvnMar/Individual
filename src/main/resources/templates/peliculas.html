@@ -205,6 +205,7 @@
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 3;
+            line-clamp: 3;
             -webkit-box-orient: vertical;
         }
         
@@ -233,13 +234,39 @@
             background-color: var(--table-border);
         }
         
-        .recommend-button {
-            background-color: var(--bg-button);
-            color: var(--text-white);
+        .favorite-button {
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
         }
         
-        .recommend-button:hover {
-            background-color: var(--bg-button-hover);
+        .favorite-button.not-favorite {
+            background-color: var(--table-header-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .favorite-button.not-favorite:hover {
+            background-color: #e91e63;
+            color: white;
+        }
+        
+        .favorite-button.is-favorite {
+            background-color: #e91e63;
+            color: white;
+        }
+        
+        .favorite-button.is-favorite:hover {
+            background-color: #c2185b;
+        }
+        
+        .favorite-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         
         .pagination {
@@ -282,12 +309,11 @@
         .navigation-buttons {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin-top: 20px;
         }
         
-        .back-button {
-            background-color: var(--table-header-bg);
-            color: var(--text-primary);
+        .back-button, .favorites-button {
             border: 1px solid var(--border-color);
             border-radius: 4px;
             padding: 10px 20px;
@@ -298,8 +324,23 @@
             display: inline-block;
         }
         
+        .back-button {
+            background-color: var(--table-header-bg);
+            color: var(--text-primary);
+        }
+        
         .back-button:hover {
             background-color: var(--table-border);
+        }
+        
+        .favorites-button {
+            background-color: #e91e63;
+            color: white;
+            border-color: #e91e63;
+        }
+        
+        .favorites-button:hover {
+            background-color: #c2185b;
         }
         
         .loading {
@@ -346,6 +387,31 @@
             background-color: rgba(232, 245, 233, 0.1);
             border-color: rgba(200, 230, 201, 0.3);
             color: #c8e6c9;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background-color: #4caf50;
+        }
+        
+        .notification.error {
+            background-color: #f44336;
         }
     </style>
 </head>
@@ -424,8 +490,12 @@
         
         <div class="navigation-buttons">
             <a href="/home" class="back-button">Volver al inicio</a>
+            <a href="/peliculas/favoritos" class="favorites-button">❤️ Mis Favoritos</a>
         </div>
     </div>
+    
+    <!-- Notificaciones -->
+    <div id="notification" class="notification"></div>
     
     <!-- JavaScript para el cambio de tema -->
     <script src="/js/theme-switcher.js"></script>
@@ -451,6 +521,9 @@
             let totalResults = 0;
             let totalPages = 0;
             
+            // Objeto para almacenar el estado de favoritos
+            let favoritesCache = new Set();
+            
             searchButton.addEventListener('click', function() {
                 performSearch(1);
             });
@@ -470,7 +543,7 @@
                 const genre = genreSelect.value;
                 
                 if (title === '' && year === '' && genre === '') {
-                    alert('Por favor, ingresa al menos un criterio de búsqueda');
+                    showNotification('Por favor, ingresa al menos un criterio de búsqueda', 'error');
                     return;
                 }
                 
@@ -525,6 +598,9 @@
                             
                             // Mostrar sección de resultados
                             resultsSection.style.display = 'block';
+                            
+                            // Cargar estados de favoritos para las películas mostradas
+                            loadFavoritesStatus(data.results);
                         } else {
                             // Mostrar mensaje de no resultados
                             noResults.style.display = 'block';
@@ -533,7 +609,7 @@
                     .catch(error => {
                         console.error('Error:', error);
                         loading.style.display = 'none';
-                        alert('Ocurrió un error al buscar las películas. Verifica tu conexión a internet.');
+                        showNotification('Ocurrió un error al buscar las películas. Verifica tu conexión a internet.', 'error');
                     });
             }
             
@@ -589,7 +665,15 @@
                             <p class="movie-overview">${overview}</p>
                             <div class="movie-actions">
                                 <button class="movie-button details-button" data-id="${movie.id}">Ver detalles</button>
-                                <button class="movie-button recommend-button" data-id="${movie.id}">Recomendar</button>
+                                <button class="movie-button favorite-button not-favorite" 
+                                        data-movie-id="${movie.id}"
+                                        data-title="${movie.title}"
+                                        data-year="${releaseYear}"
+                                        data-poster="${posterUrl}"
+                                        data-overview="${overview}"
+                                        data-rating="${movie.vote_average}">
+                                    ❤️ Favorito
+                                </button>
                             </div>
                         </div>
                     `;
@@ -600,16 +684,123 @@
                         window.open(`https://www.themoviedb.org/movie/${movieId}`, '_blank');
                     });
                     
-                    // Agregar evento para el botón de recomendar
-                    movieCard.querySelector('.recommend-button').addEventListener('click', function() {
-                        const movieId = this.getAttribute('data-id');
-                        alert(`✅ Película "${movie.title}" añadida a tus recomendaciones!`);
-                        // Aquí podrías implementar la lógica para guardar la recomendación en tu backend
+                    // Agregar evento para el botón de favorito
+                    const favoriteBtn = movieCard.querySelector('.favorite-button');
+                    favoriteBtn.addEventListener('click', function() {
+                        toggleFavorite(this);
                     });
                     
                     // Agregar la tarjeta al grid
                     movieGrid.appendChild(movieCard);
                 });
+            }
+            
+            function loadFavoritesStatus(movies) {
+                movies.forEach(movie => {
+                    // Verificar si la película está en favoritos
+                    fetch(`/api/favoritos/verificar?tipo=PELICULA&contenidoId=${movie.id}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const button = document.querySelector(`[data-movie-id="${movie.id}"]`);
+                            if (button && data.esFavorito) {
+                                updateFavoriteButton(button, true);
+                                favoritesCache.add(movie.id.toString());
+                            }
+                        })
+                        .catch(error => console.error('Error checking favorite status:', error));
+                });
+            }
+            
+            function toggleFavorite(button) {
+                if (button.disabled) return;
+                
+                button.disabled = true;
+                const movieId = button.getAttribute('data-movie-id');
+                const isFavorite = favoritesCache.has(movieId);
+                
+                if (isFavorite) {
+                    // Eliminar de favoritos
+                    fetch(`/api/favoritos/eliminar?tipo=PELICULA&contenidoId=${movieId}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            favoritesCache.delete(movieId);
+                            updateFavoriteButton(button, false);
+                            showNotification('Película eliminada de favoritos', 'success');
+                        } else {
+                            showNotification(data.message || 'Error al eliminar de favoritos', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('Error al eliminar de favoritos', 'error');
+                    })
+                    .finally(() => {
+                        button.disabled = false;
+                    });
+                } else {
+                    // Agregar a favoritos
+                    const favoriteData = {
+                        tipo: 'PELICULA',
+                        contenidoId: movieId,
+                        titulo: button.getAttribute('data-title'),
+                        autorDirector: 'Director no disponible', // TMDB requiere llamada adicional para directores
+                        imagenUrl: button.getAttribute('data-poster'),
+                        anioPublicacion: button.getAttribute('data-year'),
+                        descripcion: button.getAttribute('data-overview'),
+                        calificacion: parseFloat(button.getAttribute('data-rating'))
+                    };
+                    
+                    fetch('/api/favoritos/agregar', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(favoriteData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            favoritesCache.add(movieId);
+                            updateFavoriteButton(button, true);
+                            showNotification('Película agregada a favoritos', 'success');
+                        } else {
+                            showNotification(data.message || 'Error al agregar a favoritos', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('Error al agregar a favoritos', 'error');
+                    })
+                    .finally(() => {
+                        button.disabled = false;
+                    });
+                }
+            }
+            
+            function updateFavoriteButton(button, isFavorite) {
+                if (isFavorite) {
+                    button.classList.remove('not-favorite');
+                    button.classList.add('is-favorite');
+                    button.innerHTML = '💔 Quitar';
+                } else {
+                    button.classList.remove('is-favorite');
+                    button.classList.add('not-favorite');
+                    button.innerHTML = '❤️ Favorito';
+                }
+            }
+            
+            function showNotification(message, type) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
             }
             
             function getGenreNames(genreIds) {

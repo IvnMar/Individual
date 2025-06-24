@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Libros Favoritos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background-color: #1a237e;
+            color: white;
+            width: 100%;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .favorites-header {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .favorites-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .favorites-subtitle {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .search-favorites {
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-favorites input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .search-favorites button {
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .search-favorites button:hover {
+            background-color: #303f9f;
+        }
+        
+        .stats-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            display: inline-block;
+            margin: 0 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            min-width: 120px;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e91e63;
+            display: block;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .favorites-section {
+            margin-top: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .book-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .book-cover {
+            height: 300px;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .favorite-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #e91e63;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .book-info {
+            padding: 15px;
+        }
+        
+        .book-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            line-height: 1.3;
+        }
+        
+        .book-author {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .book-year {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 12px;
+        }
+        
+        .book-added-date {
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+        
+        .book-description {
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.5;
+            max-height: 4.5em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .book-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .book-button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .remove-button {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .remove-button:hover {
+            background-color: #d32f2f;
+        }
+        
+        .details-button {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .details-button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .empty-favorites {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .empty-title {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .empty-subtitle {
+            color: #999;
+            margin-bottom: 30px;
+        }
+        
+        .browse-button {
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .browse-button:hover {
+            background-color: #303f9f;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .back-button {
+            background-color: #f5f5f5;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 20px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3f51b5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background-color: #4caf50;
+        }
+        
+        .notification.error {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>❤️ Mis Libros Favoritos</h1>
+    </div>
+    
+    <div class="container">
+        <div class="favorites-header">
+            <h2 class="favorites-title">Tu Biblioteca Personal</h2>
+            <p class="favorites-subtitle">Todos los libros que has marcado como favoritos</p>
+            
+            <div class="search-favorites">
+                <input type="text" id="searchInput" placeholder="Buscar en mis favoritos...">
+                <button id="searchButton">Buscar</button>
+            </div>
+        </div>
+        
+        <div id="statsSection" class="stats-section" style="display: none;">
+            <div class="stat-item">
+                <span class="stat-number" id="totalBooks">0</span>
+                <span class="stat-label">Libros Favoritos</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="thisMonth">0</span>
+                <span class="stat-label">Este Mes</span>
+            </div>
+        </div>
+        
+        <div id="loadingSection" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Cargando tus libros favoritos...</p>
+        </div>
+        
+        <div id="favoritesSection" class="favorites-section" style="display: none;">
+            <h2 class="section-title">Tus Libros Favoritos</h2>
+            <div id="bookGrid" class="book-grid">
+                <!-- Los libros favoritos se mostrarán aquí -->
+            </div>
+        </div>
+        
+        <div id="emptySection" class="empty-favorites" style="display: none;">
+            <div class="empty-icon">📚</div>
+            <h3 class="empty-title">No tienes libros favoritos aún</h3>
+            <p class="empty-subtitle">¡Comienza a explorar y agrega libros que te gusten!</p>
+            <a href="/libros" class="browse-button">Explorar Libros</a>
+        </div>
+        
+        <div class="navigation-buttons">
+            <a href="/libros" class="back-button">← Buscar Más Libros</a>
+        </div>
+    </div>
+    
+    <!-- Notificaciones -->
+    <div id="notification" class="notification"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingSection = document.getElementById('loadingSection');
+            const favoritesSection = document.getElementById('favoritesSection');
+            const emptySection = document.getElementById('emptySection');
+            const statsSection = document.getElementById('statsSection');
+            const bookGrid = document.getElementById('bookGrid');
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            
+            let allFavorites = [];
+            let filteredFavorites = [];
+            
+            // Cargar favoritos al cargar la página
+            loadFavorites();
+            
+            // Configurar búsqueda
+            searchButton.addEventListener('click', searchFavorites);
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchFavorites();
+                }
+            });
+            
+            // Limpiar búsqueda cuando el input esté vacío
+            searchInput.addEventListener('input', function() {
+                if (this.value.trim() === '') {
+                    displayFavorites(allFavorites);
+                }
+            });
+            
+            function loadFavorites() {
+                fetch('/api/favoritos/listar?tipo=LIBRO')
+                    .then(response => response.json())
+                    .then(data => {
+                        loadingSection.style.display = 'none';
+                        
+                        if (data.favoritos && data.favoritos.length > 0) {
+                            allFavorites = data.favoritos;
+                            filteredFavorites = allFavorites;
+                            displayFavorites(allFavorites);
+                            updateStats(allFavorites);
+                            
+                            favoritesSection.style.display = 'block';
+                            statsSection.style.display = 'block';
+                        } else {
+                            emptySection.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        loadingSection.style.display = 'none';
+                        showNotification('Error al cargar los favoritos', 'error');
+                    });
+            }
+            
+            function displayFavorites(favorites) {
+                bookGrid.innerHTML = '';
+                
+                favorites.forEach(favorite => {
+                    const bookCard = createBookCard(favorite);
+                    bookGrid.appendChild(bookCard);
+                });
+            }
+            
+            function createBookCard(favorite) {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                
+                const addedDate = new Date(favorite.fechaAgregado).toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                const coverUrl = favorite.imagenUrl || '/api/placeholder/280/300';
+                
+                bookCard.innerHTML = `
+                    <div class="book-cover">
+                        <img src="${coverUrl}" alt="Portada de ${favorite.titulo}" onerror="this.src='/api/placeholder/280/300'">
+                        <div class="favorite-badge">❤️ Favorito</div>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title">${favorite.titulo}</h3>
+                        <p class="book-author">${favorite.autorDirector || 'Autor desconocido'}</p>
+                        <p class="book-year">📅 ${favorite.anioPublicacion || 'Año desconocido'}</p>
+                        <p class="book-added-date">Agregado el ${addedDate}</p>
+                        <p class="book-description">${favorite.descripcion || 'No hay descripción disponible.'}</p>
+                        <div class="book-actions">
+                            <button class="book-button details-button" onclick="viewDetails('${favorite.contenidoId}')">
+                                Ver detalles
+                            </button>
+                            <button class="book-button remove-button" onclick="removeFavorite('${favorite.contenidoId}', '${favorite.titulo}')">
+                                💔 Quitar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                return bookCard;
+            }
+            
+            function updateStats(favorites) {
+                const totalBooks = favorites.length;
+                const currentMonth = new Date().getMonth();
+                const currentYear = new Date().getFullYear();
+                
+                const thisMonthCount = favorites.filter(fav => {
+                    const favDate = new Date(fav.fechaAgregado);
+                    return favDate.getMonth() === currentMonth && favDate.getFullYear() === currentYear;
+                }).length;
+                
+                document.getElementById('totalBooks').textContent = totalBooks;
+                document.getElementById('thisMonth').textContent = thisMonthCount;
+            }
+            
+            function searchFavorites() {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                
+                if (searchTerm === '') {
+                    displayFavorites(allFavorites);
+                    return;
+                }
+                
+                const filtered = allFavorites.filter(favorite => 
+                    favorite.titulo.toLowerCase().includes(searchTerm) ||
+                    (favorite.autorDirector && favorite.autorDirector.toLowerCase().includes(searchTerm))
+                );
+                
+                displayFavorites(filtered);
+                
+                if (filtered.length === 0) {
+                    bookGrid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
+                            <h3>No se encontraron resultados</h3>
+                            <p>No se encontraron libros favoritos que coincidan con "${searchTerm}"</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Funciones globales para los botones
+            window.viewDetails = function(bookId) {
+                // Abrir detalles del libro en OpenLibrary
+                window.open(`https://openlibrary.org/works/${bookId}`, '_blank');
+            };
+            
+            window.removeFavorite = function(bookId, title) {
+                if (confirm(`¿Estás seguro de que quieres quitar "${title}" de tus favoritos?`)) {
+                    fetch(`/api/favoritos/eliminar?tipo=LIBRO&contenidoId=${encodeURIComponent(bookId)}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showNotification('Libro eliminado de favoritos', 'success');
+                            
+                            // Actualizar la lista local
+                            allFavorites = allFavorites.filter(fav => fav.contenidoId !== bookId);
+                            
+                            if (allFavorites.length === 0) {
+                                favoritesSection.style.display = 'none';
+                                statsSection.style.display = 'none';
+                                emptySection.style.display = 'block';
+                            } else {
+                                displayFavorites(allFavorites);
+                                updateStats(allFavorites);
+                            }
+                        } else {
+                            showNotification(data.message || 'Error al eliminar de favoritos', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('Error al eliminar de favoritos', 'error');
+                    });
+                }
+            };
+            
+            function showNotification(message, type) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
