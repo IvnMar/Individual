@@ -35,7 +35,7 @@
 
 5. Accede a la aplicación en tu navegador:
     ```
-    http://localhost:8081
+    http://localhost:8080
     ```
     Esto te permite interactuar con la aplicación a través de tu navegador web.
 
