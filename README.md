@@ -179,5 +179,8 @@ volumes:
 
 Define un volumen persistente mysql_data para evitar la pérdida de datos al reiniciar el contenedor.
 
+capturas
+![image](https://github.com/user-attachments/assets/6702ef4a-dfb2-4cda-8d55-77ab14813544)
+
 
 
