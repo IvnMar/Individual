@@ -181,6 +181,21 @@ Define un volumen persistente mysql_data para evitar la pérdida de datos al rei
 
 capturas
 ![image](https://github.com/user-attachments/assets/6702ef4a-dfb2-4cda-8d55-77ab14813544)
+![image](https://github.com/user-attachments/assets/d2d72c49-f1f5-48cf-9473-468a6291e08e)
+![image](https://github.com/user-attachments/assets/c01f9cdf-dcdb-4e5a-bf1c-e96bbdf109aa)
+![image](https://github.com/user-attachments/assets/b6a0045c-b4fb-4e87-92a8-f3f744715785)
+![image](https://github.com/user-attachments/assets/e5d5ac85-f852-47dd-a822-048f3fc8e631)
+![image](https://github.com/user-attachments/assets/3009f634-b082-493d-afbc-277e3f5acd96)
+![image](https://github.com/user-attachments/assets/1244bd27-23d6-4732-8ee8-131217ac0739)
+![image](https://github.com/user-attachments/assets/13345070-2bfa-495c-9fab-d4ebb77f6cfe)
+![image](https://github.com/user-attachments/assets/9c63c870-59c7-407c-b605-cd334302604f)
+
+
+
+
+
+
+
 
 
 
